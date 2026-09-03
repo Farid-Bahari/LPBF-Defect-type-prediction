@@ -212,7 +212,7 @@ with tabs[0]:
 
 with tabs[1]:
 
-    st.header("📊 Data Loading & Training the target model")
+    st.header("📊 Data Loading & training the target model")
 
 
     # ==========================================================================

@@ -263,7 +263,6 @@ with tabs[1]:
             "🧪 Use Example Dataset",
             "📁 Upload CSV / Excel",
             "✏️ Edit / Paste Data",
-            "🎲 Generate Synthetic Data"
         ],
         horizontal=True
     )

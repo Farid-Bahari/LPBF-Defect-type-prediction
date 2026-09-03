@@ -21,24 +21,29 @@ data_option = st.radio(
 
 if data_option == "🧪 Use Example Dataset":
 
-    example_path = "data/example_dataset.csv"
+    example_path = "example_dataset.xlsx"
 
     if os.path.exists(example_path):
 
-        example_df = pd.read_csv(example_path)
+        try:
+            example_df = pd.read_excel(example_path)
 
-        st.session_state.df = example_df
+            st.session_state.df = example_df
 
-        st.success(
-            f"Example dataset loaded successfully: "
-            f"{len(example_df)} rows × {len(example_df.columns)} columns"
-        )
+            st.success(
+                f"Example dataset loaded successfully: "
+                f"{len(example_df)} rows × {len(example_df.columns)} columns"
+            )
+
+        except Exception as e:
+            st.error(f"Could not read the Excel file: {e}")
 
     else:
 
         st.error(
-            "Example dataset was not found. "
-            "Make sure 'data/example_dataset.csv' exists in your repository."
+            "Example dataset not found. "
+            "Make sure 'example_dataset.xlsx' is in the same folder "
+            "as your Streamlit Python file."
         )
 
 

@@ -35,7 +35,7 @@ if "history" not in st.session_state:
     st.session_state.history = None
 
 # --- Application Header ---
-st.title("🔥 Optimize the LPBF processing parameters")
+st.title("🔥 Optimize your LPBF processing parameters")
 st.markdown("### *Hybrid FEM + Machine Learning Framework*")
 st.write("---")
 

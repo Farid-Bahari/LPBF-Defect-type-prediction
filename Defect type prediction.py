@@ -131,8 +131,8 @@ epochs = st.sidebar.slider(
 
 tabs = st.tabs([
     "📋 Overview & Methodology",
-    "📊 Data Management & Training",
-    "🔮 Inference / Prediction"
+    "📊 Import data and train the model",
+    "🔮 Predict"
 ])
 
 
@@ -607,10 +607,7 @@ with tabs[1]:
             len(st.session_state.df)
         )
 
-        info_col2.metric(
-            "Number of Features",
-            len(st.session_state.df.columns)
-        )
+     
 
         if CLS_COL in st.session_state.df.columns:
 

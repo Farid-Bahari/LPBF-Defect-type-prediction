@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="Optimize the LPBF processing parameters",
+    page_title="Optimize your LPBF processing parameters",
     page_icon="🔥",
     layout="wide",
     initial_sidebar_state="expanded"

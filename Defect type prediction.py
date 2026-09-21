@@ -19,9 +19,14 @@ import matplotlib.pyplot as plt
 # PAGE CONFIGURATION
 # ==============================================================================
 
+LOGO_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "logo.png"
+)
+
 st.set_page_config(
-    page_title="Optimize your LPBF Processing Parameters",
-    page_icon="🔥",
+    page_title="OPTIMUM AM",
+    page_icon=LOGO_PATH if os.path.exists(LOGO_PATH) else "🤖",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -83,10 +88,27 @@ if "dataset_source" not in st.session_state:
 # APPLICATION HEADER
 # ==============================================================================
 
-st.title("🔥 Optimize your LPBF Processing Parameters")
+header_col1, header_col2, header_col3 = st.columns([1, 2, 1])
+
+with header_col2:
+    if os.path.exists(LOGO_PATH):
+        st.image(LOGO_PATH, width=360)
+    else:
+        st.markdown(
+            "<h1 style='text-align:center;'>OPTIMUM AM</h1>",
+            unsafe_allow_html=True
+        )
 
 st.markdown(
-    "### *Hybrid FEM + Machine Learning Framework*"
+    "<h3 style='text-align:center;'>AI-driven Additive Manufacturing Optimization</h3>",
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    "<p style='text-align:center; color:#666;'>"
+    "Hybrid FEM + Machine Learning Framework"
+    "</p>",
+    unsafe_allow_html=True
 )
 
 st.write("---")
@@ -98,7 +120,19 @@ st.write("---")
 
 st.sidebar.header("⚙️ Configuration Panel")
 
-st.sidebar.subheader("Model Network Hyperparameters")
+if os.path.exists(LOGO_PATH):
+    st.sidebar.image(LOGO_PATH, width=230)
+
+st.sidebar.markdown(
+    "<p style='text-align:center; color:#666; font-size:13px;'>"
+    "AI-driven Additive Manufacturing"
+    "</p>",
+    unsafe_allow_html=True
+)
+
+st.sidebar.markdown("---")
+
+st.sidebar.subheader("🧠 Neural Network")
 
 hidden_layers = st.sidebar.slider(
     "Number of hidden layers",
@@ -117,11 +151,42 @@ neurons_per_layer = st.sidebar.slider(
 )
 
 epochs = st.sidebar.slider(
-    "Training Epochs",
+    "Training epochs",
     min_value=10,
     max_value=500,
     value=100,
     step=10
+)
+
+batch_size = st.sidebar.select_slider(
+    "Batch size",
+    options=[4, 8, 16, 32, 64, 128],
+    value=16
+)
+
+learning_rate = st.sidebar.select_slider(
+    "Learning rate",
+    options=[0.0001, 0.0005, 0.001, 0.005, 0.01],
+    value=0.001,
+    format_func=lambda x: f"{x:g}"
+)
+
+st.sidebar.markdown("---")
+
+st.sidebar.subheader("📊 Training Dataset")
+
+dataset_fraction = st.sidebar.slider(
+    "Dataset size used for training",
+    min_value=25,
+    max_value=100,
+    value=100,
+    step=25,
+    format="%d%%"
+)
+
+st.sidebar.caption(
+    "The selected percentage is sampled from the active dataset. "
+    "Use 100% to train with all available rows."
 )
 
 
@@ -583,7 +648,8 @@ with tabs[1]:
 
         st.caption(
             "You can edit individual cells, paste values, "
-            "or add/remove rows."
+            "or add/remove rows. The example dataset can be used directly "
+            "for model training."
         )
 
         edited_df = st.data_editor(
@@ -622,6 +688,14 @@ with tabs[1]:
     # ==========================================================================
 
     st.subheader("4. 🚀 Train Neural Network")
+
+    if st.session_state.df is not None:
+        st.info(
+            f"Training dataset: **{dataset_fraction}%** of the active dataset "
+            f"({max(1, round(len(st.session_state.df) * dataset_fraction / 100))} "
+            f"rows approximately). "
+            "Adjust the percentage in the sidebar."
+        )
 
     if st.session_state.df is None:
 
@@ -672,6 +746,51 @@ with tabs[1]:
                 training_df = df[
                     REQUIRED_COLS
                 ].copy()
+
+                # ==============================================================
+                # SELECT TRAINING DATASET SIZE
+                # ==============================================================
+
+                if dataset_fraction < 100:
+                    # Stratified sampling keeps the defect-class distribution
+                    # approximately consistent with the active dataset.
+                    sampled_parts = []
+
+                    for class_name, class_df in training_df.groupby(
+                        CLS_COL,
+                        sort=False
+                    ):
+                        n_class = max(
+                            1,
+                            int(round(
+                                len(class_df) * dataset_fraction / 100
+                            ))
+                        )
+
+                        n_class = min(
+                            n_class,
+                            len(class_df)
+                        )
+
+                        sampled_parts.append(
+                            class_df.sample(
+                                n=n_class,
+                                random_state=42
+                            )
+                        )
+
+                    training_df = pd.concat(
+                        sampled_parts,
+                        ignore_index=True
+                    ).sample(
+                        frac=1,
+                        random_state=42
+                    ).reset_index(drop=True)
+
+                st.write(
+                    f"**Rows selected for training:** {len(training_df)} "
+                    f"of {len(df)}"
+                )
 
                 missing_values = (
                     training_df.isnull()
@@ -736,6 +855,27 @@ with tabs[1]:
                                 .astype(str)
                                 .values
                             )
+
+                            # Check that the selected dataset contains enough
+                            # samples from each class for classification.
+                            class_counts = (
+                                pd.Series(y_cls_raw)
+                                .value_counts()
+                            )
+
+                            if len(class_counts) < 2:
+                                raise ValueError(
+                                    "At least two different DefectType classes "
+                                    "are required for classification."
+                                )
+
+                            if class_counts.min() < 2:
+                                raise ValueError(
+                                    "Each DefectType class must contain at "
+                                    "least 2 samples in the selected training "
+                                    "dataset. Increase the dataset size or "
+                                    "add more data."
+                                )
 
                             # Check numeric conversion
                             if np.isnan(X).any():
@@ -885,8 +1025,12 @@ with tabs[1]:
                                 ]
                             )
 
+                            optimizer = tf.keras.optimizers.Adam(
+                                learning_rate=learning_rate
+                            )
+
                             model.compile(
-                                optimizer="adam",
+                                optimizer=optimizer,
 
                                 loss={
                                     "reg_output": "mse",
@@ -919,12 +1063,12 @@ with tabs[1]:
                             # TRAIN
                             # ==================================================
 
-                            batch_size = min(
-                                16,
-                                max(
-                                    2,
-                                    len(X_train) // 4
-                                )
+                            # The batch size is selected from the sidebar.
+                            # For very small datasets, keep it within the
+                            # available number of training samples.
+                            effective_batch_size = min(
+                                batch_size,
+                                len(X_train)
                             )
 
                             history = model.fit(
@@ -950,7 +1094,7 @@ with tabs[1]:
 
                                 epochs=epochs,
 
-                                batch_size=batch_size,
+                                batch_size=effective_batch_size,
 
                                 callbacks=[
                                     early_stop
@@ -1428,3 +1572,16 @@ with tabs[2]:
                 st.error(
                     f"Prediction failed: {e}"
                 )
+
+# ==============================================================================
+# FOOTER
+# ==============================================================================
+
+st.markdown("---")
+
+st.markdown(
+    "<div style='text-align:center; color:#777; font-size:12px;'>"
+    "OPTIMUM AM · AI-driven Additive Manufacturing Optimization"
+    "</div>",
+    unsafe_allow_html=True
+)

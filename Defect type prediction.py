@@ -159,10 +159,17 @@ with tabs[1]:
     # Showcase Structuring Templates
     with st.expander("🔍 View Expected Database Template Geometry Configuration", expanded=False):
         template_df = pd.DataFrame({
-            "Power": [180, 220, 260], "Speed": [800, 1000, 1200], "ExposureTime": [40, 60, 90],
-            "EnergyDensity": [55, 65, 80], "Al": [94.5, 90.0, 88.5], "Fe": [1.8, 4.0, 5.5],
-            "Cr": [1.4, 2.5, 3.2], "Ti": [1.2, 1.8, 2.0], "Si": [1.1, 1.7, 0.8],
-            "Depth": [120.5, 450.2, 980.1], "Width": [230.1, 510.4, 890.7],
+            "Power": [180, 220, 260], 
+            "Speed": [800, 1000, 1200], 
+            "ExposureTime": [40, 60, 90],
+            "EnergyDensity": [55, 65, 80], 
+            "Al": [94.5, 90.0, 88.5], 
+            "Fe": [1.8, 4.0, 5.5],
+            "Cr": [1.4, 2.5, 3.2], 
+            "Ti": [1.2, 1.8, 2.0], 
+            "Si": [1.1, 1.7, 0.8],
+            "Depth": [120.5, 450.2, 980.1], 
+            "Width": [230.1, 510.4, 890.7],
             "DefectType": ["Stable-Zone", "LackOfFusion", "Keyholing"]
         })
         st.dataframe(template_df, use_container_width=True, hide_index=True)
@@ -171,7 +178,6 @@ with tabs[1]:
 
     # Ingest Data or Compile Synthetic Engine
     if data_option == "🧪 Use Synthetic Framework Data":
-        # Safe algorithmic fallback generator to give immediate client utility
         np.random.seed(42)
         rows = 250
         mock_p = np.random.uniform(100, 400, rows)
@@ -197,4 +203,3 @@ with tabs[1]:
         st.session_state.df = synthetic_df
         st.session_state.dataset_source = "Synthetic Sandbox Matrix Engine"
         st.success("✅ Sandboxed multi-component alloy data matrix generated securely.")
-    else:

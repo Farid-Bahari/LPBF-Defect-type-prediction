@@ -31,6 +31,82 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# ==============================================================================
+# PROFESSIONAL DARK UI
+# ==============================================================================
+
+st.markdown("""
+<style>
+    .stApp {
+        background: linear-gradient(135deg, #06101d 0%, #081827 55%, #06111e 100%);
+        color: #eaf4ff;
+    }
+    [data-testid="stHeader"] { background: rgba(4, 12, 22, 0.92); }
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #071625 0%, #06121f 100%);
+        border-right: 1px solid #18324a;
+    }
+    [data-testid="stSidebar"] > div:first-child { padding-top: 1.2rem; }
+    .brand-card {
+        padding: 8px 8px 18px 8px;
+        border-bottom: 1px solid #18324a;
+        margin-bottom: 18px;
+    }
+    .brand-name {
+        font-size: 20px; font-weight: 800; letter-spacing: .2px;
+        color: #f4f8ff; margin-top: 6px;
+    }
+    .brand-name span { color: #19a9ff; }
+    .brand-subtitle { font-size: 11px; color: #91aac0; margin-top: 2px; }
+    .main-title {
+        font-size: 32px; font-weight: 800; line-height: 1.15;
+        margin: 4px 0 4px 0; color: #f3f7ff;
+    }
+    .main-subtitle {
+        font-size: 16px; color: #8fc8ec; font-style: italic; margin-bottom: 18px;
+    }
+    .hero-card {
+        background: linear-gradient(145deg, rgba(12,35,55,.95), rgba(7,23,39,.95));
+        border: 1px solid #15517b; border-radius: 16px; padding: 22px 24px;
+        box-shadow: 0 12px 35px rgba(0,0,0,.18);
+    }
+    .info-card {
+        background: linear-gradient(145deg, rgba(10,31,49,.96), rgba(7,22,37,.96));
+        border: 1px solid #176394; border-radius: 14px; padding: 18px 20px;
+        min-height: 210px;
+    }
+    .workflow-box {
+        background: linear-gradient(145deg, #0b2942, #081d31);
+        border: 1px solid #1586cf; border-radius: 12px; padding: 16px 10px;
+        text-align: center; min-height: 118px;
+        display: flex; flex-direction: column; justify-content: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,.16);
+    }
+    .workflow-icon { font-size: 30px; margin-bottom: 8px; }
+    .workflow-title { font-size: 14px; font-weight: 700; color: #e9f5ff; }
+    .workflow-arrow { text-align: center; font-size: 27px; color: #16a7ff; padding-top: 42px; }
+    .section-title { color: #f1f7ff; font-size: 22px; font-weight: 750; margin-bottom: 10px; }
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0; background: #091b2c; border-radius: 12px 12px 0 0; padding: 0 8px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: #a9c2d7; background: transparent; border-radius: 10px 10px 0 0;
+        padding: 12px 20px; font-weight: 600;
+    }
+    .stTabs [aria-selected="true"] {
+        color: white !important; background: linear-gradient(90deg, #0e87df, #0c6fc0) !important;
+    }
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(90deg, #0b9bf0, #0877d1);
+        border: 1px solid #23aaff; border-radius: 9px;
+    }
+    div[data-testid="stMetric"] {
+        background: #0b2034; border: 1px solid #174969; border-radius: 12px; padding: 12px;
+    }
+    .small-note { color: #8da8bd; font-size: 13px; }
+</style>
+""", unsafe_allow_html=True)
+
 
 # ==============================================================================
 # CONSTANTS
@@ -88,51 +164,31 @@ if "dataset_source" not in st.session_state:
 # APPLICATION HEADER
 # ==============================================================================
 
-header_col1, header_col2, header_col3 = st.columns([1, 2, 1])
-
-with header_col2:
+header_left, header_right = st.columns([8, 1])
+with header_left:
+    st.markdown('<div class="main-title">Optimize your LPBF Processing Parameters</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-subtitle">Hybrid FEM + Machine Learning Framework</div>', unsafe_allow_html=True)
+with header_right:
     if os.path.exists(LOGO_PATH):
-        st.image(LOGO_PATH, width=360)
-    else:
-        st.markdown(
-            "<h1 style='text-align:center;'>OPTIMUM AM</h1>",
-            unsafe_allow_html=True
-        )
-
-st.markdown(
-    "<h3 style='text-align:center;'>AI-driven Additive Manufacturing Optimization</h3>",
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    "<p style='text-align:center; color:#666;'>"
-    "Hybrid FEM + Machine Learning Framework"
-    "</p>",
-    unsafe_allow_html=True
-)
-
-st.write("---")
-
+        st.image(LOGO_PATH, width=125)
 
 # ==============================================================================
 # SIDEBAR
 # ==============================================================================
 
-st.sidebar.header("⚙️ Configuration Panel")
-
 if os.path.exists(LOGO_PATH):
-    st.sidebar.image(LOGO_PATH, width=230)
+    st.sidebar.image(LOGO_PATH, width=190)
 
 st.sidebar.markdown(
-    "<p style='text-align:center; color:#666; font-size:13px;'>"
-    "AI-driven Additive Manufacturing"
-    "</p>",
+    '<div class="brand-card">'
+    '<div class="brand-name">OPTIMUM <span>AM</span></div>'
+    '<div class="brand-subtitle">AI-driven Additive Manufacturing Optimization</div>'
+    '</div>',
     unsafe_allow_html=True
 )
 
-st.sidebar.markdown("---")
-
-st.sidebar.subheader("🧠 Neural Network")
+st.sidebar.markdown('<div class="section-title">⚙️ Configuration Panel</div>', unsafe_allow_html=True)
+st.sidebar.markdown('<div style="color:#8fc8ec;font-weight:700;margin-bottom:10px;">Model Network Hyperparameters</div>', unsafe_allow_html=True)
 
 hidden_layers = st.sidebar.slider(
     "Number of hidden layers",
@@ -195,9 +251,9 @@ st.sidebar.caption(
 # ==============================================================================
 
 tabs = st.tabs([
-    "📋 Overview & Methodology",
-    "📊 Import data and train the model",
-    "🔮 Predict"
+    "▣  Overview",
+    "▤  Data & Training",
+    "⌁  Predict"
 ])
 
 
@@ -207,69 +263,66 @@ tabs = st.tabs([
 
 with tabs[0]:
 
-    st.header("How It Works & Methodology")
+    st.markdown('<div class="section-title">How It Works & Methodology</div>', unsafe_allow_html=True)
 
-    col1, col2 = st.columns([3, 2])
+    intro_col, steps_col = st.columns([1.15, 0.85])
 
-    with col1:
+    with intro_col:
+        st.markdown('''
+        <div class="hero-card">
+            <div style="font-size:16px;line-height:1.55;color:#d9eaf7;">
+            The proposed approach combines <b>Finite Element Method (FEM)</b>
+            simulations with an <b>Artificial Neural Network (ANN)</b> and
+            transfer learning.
+            <br><br>
+            The ANN is first trained using FEM-generated data and subsequently
+            fine-tuned using experimental data.
+            </div>
+            <div style="color:#10a7ff;font-size:18px;font-weight:750;margin-top:18px;">The Model Predicts</div>
+            <ul style="color:#cfe4f4;line-height:1.8;">
+                <li>Melt pool depth (μm)</li>
+                <li>Melt pool width (μm)</li>
+                <li>Defect type: Lack of Fusion (LoF), Full-dense, Keyhole</li>
+            </ul>
+        </div>
+        ''', unsafe_allow_html=True)
 
-        st.markdown("""
-        The proposed approach combines **Finite Element Method (FEM)**
-        simulations with an **Artificial Neural Network (ANN)** and
-        transfer learning.
+    with steps_col:
+        st.markdown('''
+        <div class="info-card">
+            <div style="color:#16a7ff;font-size:18px;font-weight:750;margin-bottom:12px;">ⓘ Steps to use the App</div>
+            <div style="line-height:1.55;color:#d4e6f4;">
+            <b>① Load Data</b><br><span class="small-note">Go to Data & Training.</span><br><br>
+            <b>② Choose Dataset</b><br><span class="small-note">Use the example dataset or upload your own.</span><br><br>
+            <b>③ Configure Architecture</b><br><span class="small-note">Adjust network and training settings.</span><br><br>
+            <b>④ Train</b><br><span class="small-note">Train the multitask network.</span><br><br>
+            <b>⑤ Predict</b><br><span class="small-note">Use the prediction tab.</span>
+            </div>
+        </div>
+        ''', unsafe_allow_html=True)
 
-        The ANN is first trained using FEM-generated data and subsequently
-        fine-tuned using experimental data.
+    st.markdown('<div class="section-title" style="margin-top:24px;">Workflow</div>', unsafe_allow_html=True)
 
-        #### **The Model Predicts:**
+    workflow = [
+        ("🔥", "FEM Simulations"),
+        ("🧠", "Source ANN"),
+        ("▤", "Pre-trained Source Model"),
+        ("⚗", "Experimental Data"),
+        ("🧠", "Transfer Learning / Fine-tuning"),
+        ("◈", "Melt Pool & Defect Prediction"),
+    ]
 
-        * **Melt pool depth** (μm)
-        * **Melt pool width** (μm)
-        * **Defect type:**
-            * *Lack of Fusion (LoF)*
-            * *Full-dense*
-            * *Keyhole*
-        """)
-
-    with col2:
-
-        st.info("""
-        #### **Steps to use the App**
-
-        1. **Load Data**
-           Go to the *Data Management & Training* tab.
-
-        2. **Choose Dataset**
-           Use the example dataset or upload your own data.
-
-        3. **Configure Architecture**
-           Adjust neurons, hidden layers, and training epochs.
-
-        4. **Train**
-           Click *Train Multitask Network Model*.
-
-        5. **Predict**
-           Use the *Inference / Prediction* tab.
-        """)
-
-    st.subheader("Workflow Diagram")
-
-    st.markdown("""
-    ```text
-    FEM Simulations
-           ↓
-    Source ANN
-           ↓
-    Pre-trained Source Model
-           ↓
-    Experimental Data
-           ↓
-    Transfer Learning / Fine-tuning
-           ↓
-    Melt Pool & Defect Prediction
-    ```
-    """)
-
+    cols = st.columns([1.4, .28, 1.4, .28, 1.4, .28, 1.4, .28, 1.4, .28, 1.4])
+    for i, (icon, title) in enumerate(workflow):
+        with cols[i * 2]:
+            st.markdown(
+                f'<div class="workflow-box"><div class="workflow-icon">{icon}</div>'
+                f'<div class="workflow-title">{title}</div></div>',
+                unsafe_allow_html=True
+            )
+        if i < len(workflow) - 1:
+            with cols[i * 2 + 1]:
+                st.markdown('<div class="workflow-arrow">→</div>', unsafe_allow_html=True)
 
 # ==============================================================================
 # TAB 2: DATA MANAGEMENT & TRAINING
@@ -277,7 +330,7 @@ with tabs[0]:
 
 with tabs[1]:
 
-    st.header("📊 Data Loading & training the target model")
+    st.header("Data Loading & Training")
 
 
     # ==========================================================================
@@ -1297,7 +1350,7 @@ with tabs[1]:
 
                         st.info(
                             "The trained model is now available "
-                            "in the 🔮 Inference / Prediction tab."
+                            "in the ⌁ Prediction tab."
                         )
 
                     except Exception as e:
@@ -1321,7 +1374,7 @@ with tabs[2]:
 
         st.warning(
             "No trained model found yet. "
-            "Go to the 📊 Data Management & Training tab "
+            "Go to the ▤ Data & Training tab "
             "and train a model first."
         )
 
